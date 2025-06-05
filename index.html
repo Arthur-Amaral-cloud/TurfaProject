@@ -1,40 +1,32 @@
-<!--
-FlashHorses
-Duplas: A: Arthur e Artur | B: Ryan e Wendel;
-
-1 - Montar toda a estrutura do HTML
-2 - Criar variáveis que listam os nomes dos cavalos, todos os tempos da corrida, numero de voltas e numero de cavalos
-3 - Criar função que cadastra os cavalos na lista 
-4 - Criar um for que intera por cada volta no
-
--->
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>FlashHorses</title>
 </head>
 
 <body>
     <main class="main-screen">
-        <section class="box-welcome">
+        <section id="boxWelcome">
             <div class="title-welcome">Seja Bem-vindo a Turfa</div>
             <div class="box-button-welcome">
                 <button onclick="irparacadastro()">Vamos correr!</button>
             </div>
         </section>
-        <section class="box-cadastro">
+        <section id="boxCadastro">
             <span>Coloque a quantidade cavalos na corrida</span><input type="number" maxlength="1" id="ipt_qtdcavalos">
             <span>Coloque a quantidade de voltas que a corrida terá</span> <input type="number" maxlength="2"
                 id="ipt_voltas">
-            <button onclick="irparacadastrocavalo()">Cadastrar Cavalos</button>
+            <button id="cadCavalos" onclick="irparacadastrocavalo()">Cadastrar Cavalos</button>
         </section>
-        <section class="box-cadastro-nomes">
+        <section id="boxCadastroNomes">
             <span>Coloque o nome do cavalo participante</span> <input type="text" id="ipt_cavalo_participante">
-            <button onclick="cad_nome()">Cadastrar nome</button>
+            <button id="jogar" onclick="cad_nome()">Cadastrar nome</button>
         </section>
+        <div id="tabelaResultados"></div>
         <div id="resposta"></div>
     </main>
 </body>
@@ -46,10 +38,16 @@ Duplas: A: Arthur e Artur | B: Ryan e Wendel;
     var voltas = 0;
     var qtd_cavalos = 0;
     var primeiro_lugar = 0;
-    var segundo_lugar;
-    var terceiro_lugar;
+    var segundo_lugar = 0;
+    var terceiro_lugar = 0;
+
+    function irparacadastro() {
+        boxWelcome.style.display = "none";
+        boxCadastro.style.display = "flex";
+    }
 
     function irparacadastrocavalo() {
+
         if ((ipt_qtdcavalos.value > 0 && ipt_qtdcavalos.value != null) || (ipt_voltas.value > 0 && ipt_voltas.value != null)) {
             voltas = ipt_voltas.value
             qtd_cavalos = ipt_qtdcavalos.value
@@ -58,6 +56,10 @@ Duplas: A: Arthur e Artur | B: Ryan e Wendel;
 
             ipt_qtdcavalos.value = ``;
             ipt_voltas.value = ``;
+
+            boxWelcome.style.display = "none";
+            boxCadastro.style.display = "none";
+            boxCadastroNomes.style.display = "flex";
 
         } else {
             alert('Insira valores nos campos')
@@ -74,6 +76,10 @@ Duplas: A: Arthur e Artur | B: Ryan e Wendel;
                 alert('Cadastrado!');
                 qtd_cavalos--;
                 ipt_cavalo_participante.value = ``;
+
+                if (qtd_cavalos == 0) {
+                    jogar.innerHTML = `Iniciar Corrida`;
+                }
             }
             else {
                 alert('Insira o nome de um cavalo')
@@ -81,11 +87,101 @@ Duplas: A: Arthur e Artur | B: Ryan e Wendel;
         }
         else {
             iniciarCorrida();
+
+            boxCadastroNomes.style.display = "none";
+
         }
     }
 
     function iniciarCorrida() {
-        for (var i = 1; i <= voltas; i++) {
+        var tabelaHTML = '<table><tr><th>Cavalo</th>';
+
+        for (var v = 1; v <= voltas; v++) {
+            tabelaHTML += `<th>Volta ${v}</th>`;
+            if (v == voltas) {
+                tabelaHTML += `<th>Tempo Acumulado</th>`;
+            }
+        }
+        tabelaHTML += '</tr>';
+
+        for (var i = 0; i < nome_cavalo.length; i++) {
+            tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
+
+            var tempo_A = 0;
+            for (var v = 1; v <= voltas; v++) {
+                var tempo = Number((Math.random() * 2 + 7).toFixed(1));
+                tempo_A += Number(tempo);
+                tabelaHTML += `<td>${tempo}</td>`;
+            }
+            tabelaHTML += `<td>${tempo_A}</td>`;
+            tempo_acumulado.push(tempo_A);
+            tabelaHTML += '</tr>';
+        }
+
+        tabelaHTML += '</table>';
+        document.getElementById('tabelaResultados').innerHTML = tabelaHTML;
+        if (nome_cavalo.length == 2) {
+            segundo_lugar = 1;
+
+            for (var i = 0; i < tempo_acumulado.length; i++) {
+                if (tempo_acumulado[i] < primeiro_lugar) {
+                    segundo_lugar = primeiro_lugar;
+                    primeiro_lugar = i;
+                }
+            }
+        }
+        else {
+
+            for (let i = 0; i < tempo_acumulado.length; i++) {
+                if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
+                    terceiro_lugar = segundo_lugar;
+                    segundo_lugar = primeiro_lugar;
+                    primeiro_lugar = i;
+                    console.log('ta indo 1');
+                }
+                else if (tempo_acumulado[i] < tempo_acumulado[segundo_lugar]) {
+                    terceiro_lugar = segundo_lugar;
+                    segundo_lugar = i;
+                    console.log('ta indo 2');
+                } else if (tempo_acumulado[i] < tempo_acumulado[terceiro_lugar]) {
+                    terceiro_lugar = i;
+                    console.log('ta indo 3');
+                }
+            }
+
+
+        }
+
+        if (tempo_acumulado.length >= 3) {
+            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${tempo_acumulado[primeiro_lugar]}m<br>Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${tempo_acumulado[segundo_lugar]}m<br>Terceiro Lugar: ${nome_cavalo[terceiro_lugar]} Tempo: ${tempo_acumulado[terceiro_lugar]}m`;
+        } else {
+            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${tempo_acumulado[primeiro_lugar]}m<br>Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${tempo_acumulado[segundo_lugar]}m`;
+        }
+
+    }
+
+    function criarTabelaResultados() {
+        var tabelaHTML = '<table><tr><th>Cavalo</th>';
+
+        for (var v = 1; v <= voltas; v++) {
+            tabelaHTML += `<th>Volta ${v}</th>`;
+        }
+        tabelaHTML += '</tr>';
+
+        for (var i = 0; i < nome_cavalo.length; i++) {
+            tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
+
+            for (var v = 1; v <= voltas; v++) {
+                tabelaHTML += '<td>-</td>';
+            }
+            tabelaHTML += '</tr>';
+        }
+
+        tabelaHTML += '</table>';
+        document.getElementById('tabelaResultados').innerHTML = tabelaHTML;
+    }
+
+    /*        for (var i = 1; i <= voltas; i++) {
             resposta.innerHTML += `<br>Volta ${i} <br>`;
             if (i == 1) {
                 for (var index = 0; index < nome_cavalo.length; index++) {
@@ -101,28 +197,5 @@ Duplas: A: Arthur e Artur | B: Ryan e Wendel;
                     resposta.innerHTML += `Cavalo:${nome_cavalo[index]} - Tempo Acumulado:${tempo_acumulado[index]}m - Tempo da volta:${tempo}m - `
                 }
             }
-        }
-
-
-        for (let i = 0; i < tempo_acumulado.length; i++) {
-            if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
-                terceiro_lugar = segundo_lugar;
-                segundo_lugar = primeiro_lugar;
-                primeiro_lugar = i
-            }
-            else if (segundo_lugar && tempo_acumulado[i] < tempo_acumulado[segundo_lugar]) {
-                terceiro_lugar = segundo_lugar;
-                segundo_lugar = i
-            } else if (terceiro_lugar && tempo_acumulado[i] < tempo_acumulado[terceiro_lugar]) {
-                terceiro_lugar = i;
-            }
-        }
-
-
-            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${primeiro_lugar} Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${segundo_lugar} Terceiro Lugar: ${nome_cavalo[terceiro_lugar]} Tempo: ${terceiro_lugar}`;
-        
-    }
-
-
-
+        }*/
 </script>
