@@ -1,0 +1,128 @@
+<!--
+FlashHorses
+Duplas: A: Arthur e Artur | B: Ryan e Wendel;
+
+1 - Montar toda a estrutura do HTML
+2 - Criar variáveis que listam os nomes dos cavalos, todos os tempos da corrida, numero de voltas e numero de cavalos
+3 - Criar função que cadastra os cavalos na lista 
+4 - Criar um for que intera por cada volta no
+
+-->
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashHorses</title>
+</head>
+
+<body>
+    <main class="main-screen">
+        <section class="box-welcome">
+            <div class="title-welcome">Seja Bem-vindo a Turfa</div>
+            <div class="box-button-welcome">
+                <button onclick="irparacadastro()">Vamos correr!</button>
+            </div>
+        </section>
+        <section class="box-cadastro">
+            <span>Coloque a quantidade cavalos na corrida</span><input type="number" maxlength="1" id="ipt_qtdcavalos">
+            <span>Coloque a quantidade de voltas que a corrida terá</span> <input type="number" maxlength="2"
+                id="ipt_voltas">
+            <button onclick="irparacadastrocavalo()">Cadastrar Cavalos</button>
+        </section>
+        <section class="box-cadastro-nomes">
+            <span>Coloque o nome do cavalo participante</span> <input type="text" id="ipt_cavalo_participante">
+            <button onclick="cad_nome()">Cadastrar nome</button>
+        </section>
+        <div id="resposta"></div>
+    </main>
+</body>
+
+</html>
+<script>
+    var nome_cavalo = []
+    var tempo_acumulado = [];
+    var voltas = 0;
+    var qtd_cavalos = 0;
+    var primeiro_lugar = 0;
+    var segundo_lugar;
+    var terceiro_lugar;
+
+    function irparacadastrocavalo() {
+        if ((ipt_qtdcavalos.value > 0 && ipt_qtdcavalos.value != null) || (ipt_voltas.value > 0 && ipt_voltas.value != null)) {
+            voltas = ipt_voltas.value
+            qtd_cavalos = ipt_qtdcavalos.value
+
+            alert('Cadastrado!');
+
+            ipt_qtdcavalos.value = ``;
+            ipt_voltas.value = ``;
+
+        } else {
+            alert('Insira valores nos campos')
+        }
+    }
+
+    function cad_nome() {
+        var nomeCavalo = ipt_cavalo_participante.value;
+
+        if (qtd_cavalos > 0) {
+            if (nomeCavalo != "") {
+                nome_cavalo.push(nomeCavalo);
+
+                alert('Cadastrado!');
+                qtd_cavalos--;
+                ipt_cavalo_participante.value = ``;
+            }
+            else {
+                alert('Insira o nome de um cavalo')
+            }
+        }
+        else {
+            iniciarCorrida();
+        }
+    }
+
+    function iniciarCorrida() {
+        for (var i = 1; i <= voltas; i++) {
+            resposta.innerHTML += `<br>Volta ${i} <br>`;
+            if (i == 1) {
+                for (var index = 0; index < nome_cavalo.length; index++) {
+                    var tempo = Number((Math.random() * 2 + 7).toFixed(1));
+                    tempo_acumulado.push(tempo);
+                    resposta.innerHTML += `Cavalo:${nome_cavalo[index]} - Tempo Acumulado:${tempo_acumulado[index]}m - Tempo da volta:${tempo}m - `
+                }
+            } else {
+                for (var index = 0; index < nome_cavalo.length; index++) {
+                    var tempo = Number((Math.random() * 2 + 7).toFixed(1));
+                    tempo_acumulado[index] += tempo;
+                    tempo_acumulado[index] = Number(tempo_acumulado[index].toFixed(1));
+                    resposta.innerHTML += `Cavalo:${nome_cavalo[index]} - Tempo Acumulado:${tempo_acumulado[index]}m - Tempo da volta:${tempo}m - `
+                }
+            }
+        }
+
+
+        for (let i = 0; i < tempo_acumulado.length; i++) {
+            if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
+                terceiro_lugar = segundo_lugar;
+                segundo_lugar = primeiro_lugar;
+                primeiro_lugar = i
+            }
+            else if (segundo_lugar && tempo_acumulado[i] < tempo_acumulado[segundo_lugar]) {
+                terceiro_lugar = segundo_lugar;
+                segundo_lugar = i
+            } else if (terceiro_lugar && tempo_acumulado[i] < tempo_acumulado[terceiro_lugar]) {
+                terceiro_lugar = i;
+            }
+        }
+
+
+            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${primeiro_lugar} Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${segundo_lugar} Terceiro Lugar: ${nome_cavalo[terceiro_lugar]} Tempo: ${terceiro_lugar}`;
+        
+    }
+
+
+
+</script>
