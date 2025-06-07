@@ -47,22 +47,23 @@
     }
 
     function irparacadastrocavalo() {
-
-        if ((ipt_qtdcavalos.value > 0 && ipt_qtdcavalos.value != null) || (ipt_voltas.value > 0 && ipt_voltas.value != null)) {
-            voltas = ipt_voltas.value
-            qtd_cavalos = ipt_qtdcavalos.value
-
-            alert('Cadastrado!');
-
-            ipt_qtdcavalos.value = ``;
-            ipt_voltas.value = ``;
-
-            boxWelcome.style.display = "none";
-            boxCadastro.style.display = "none";
-            boxCadastroNomes.style.display = "flex";
-
+        if (ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6 || ipt_voltas.value < 5 || ipt_voltas.value > 10) {
+            alert(`O número de cavalos deve estar entre 2 e 6 e o número de voltas entre 5 e 20`);
         } else {
-            alert('Insira valores nos campos')
+            if ((ipt_qtdcavalos.value > 0 && ipt_qtdcavalos.value != null) || (ipt_voltas.value > 0 && ipt_voltas.value != null)) {
+                voltas = ipt_voltas.value
+                qtd_cavalos = ipt_qtdcavalos.value
+
+                ipt_qtdcavalos.value = ``;
+                ipt_voltas.value = ``;
+
+                boxWelcome.style.display = "none";
+                boxCadastro.style.display = "none";
+                boxCadastroNomes.style.display = "flex";
+
+            } else {
+                alert('Insira valores nos campos');
+            }
         }
     }
 
@@ -73,11 +74,11 @@
             if (nomeCavalo != "") {
                 nome_cavalo.push(nomeCavalo);
 
-                alert('Cadastrado!');
                 qtd_cavalos--;
                 ipt_cavalo_participante.value = ``;
 
                 if (qtd_cavalos == 0) {
+                    ipt_cavalo_participante.style.display = 'none';
                     jogar.innerHTML = `Iniciar Corrida`;
                 }
             }
@@ -111,6 +112,7 @@
             for (var v = 1; v <= voltas; v++) {
                 var tempo = Number((Math.random() * 2 + 7).toFixed(1));
                 tempo_A += Number(tempo);
+                tempo_A = Number(tempo_A.toFixed(1));
                 tabelaHTML += `<td>${tempo}</td>`;
             }
             tabelaHTML += `<td>${tempo_A}</td>`;
@@ -120,35 +122,21 @@
 
         tabelaHTML += '</table>';
         document.getElementById('tabelaResultados').innerHTML = tabelaHTML;
-        if (nome_cavalo.length == 2) {
-            segundo_lugar = 1;
 
-            for (var i = 0; i < tempo_acumulado.length; i++) {
-                if (tempo_acumulado[i] < primeiro_lugar) {
-                    segundo_lugar = primeiro_lugar;
-                    primeiro_lugar = i;
-                }
+        for (let i = 0; i < tempo_acumulado.length; i++) {
+            if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
+                terceiro_lugar = segundo_lugar;
+                segundo_lugar = primeiro_lugar;
+                primeiro_lugar = i;
             }
-        }
-        else {
+            else if (tempo_acumulado[i] < tempo_acumulado[segundo_lugar] || primeiro_lugar == segundo_lugar) {
+                terceiro_lugar = segundo_lugar;
+                segundo_lugar = i;
 
-            for (let i = 0; i < tempo_acumulado.length; i++) {
-                if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
-                    terceiro_lugar = segundo_lugar;
-                    segundo_lugar = primeiro_lugar;
-                    primeiro_lugar = i;
-                    console.log('ta indo 1');
-                }
-                else if (tempo_acumulado[i] < tempo_acumulado[segundo_lugar]) {
-                    terceiro_lugar = segundo_lugar;
-                    segundo_lugar = i;
-                    console.log('ta indo 2');
-                } else if (tempo_acumulado[i] < tempo_acumulado[terceiro_lugar]) {
-                    terceiro_lugar = i;
-                    console.log('ta indo 3');
-                }
             }
-
+            else if (tempo_acumulado[i] < tempo_acumulado[terceiro_lugar] || primeiro_lugar == terceiro_lugar || terceiro_lugar == segundo_lugar) {
+                terceiro_lugar = i;
+            }
 
         }
 
@@ -157,6 +145,8 @@
         } else {
             resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${tempo_acumulado[primeiro_lugar]}m<br>Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${tempo_acumulado[segundo_lugar]}m`;
         }
+
+        resposta.innerHTML += `<br><br>Critério de Desempate: Ordem de Inscrição`;
 
     }
 

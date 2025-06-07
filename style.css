@@ -13,6 +13,22 @@ body {
     background-size: cover;
 }
 
+input {
+    color: black;
+}
+
+button {
+    color: black;
+}
+
+th {
+  border: 1px solid white;
+}
+
+td {
+  border: 1px solid white;
+}
+
 #boxWelcome {
     display: flex;
     flex-direction: column;
