@@ -25,6 +25,7 @@
         <section id="boxCadastroNomes">
             <span>Coloque o nome do cavalo participante</span> <input type="text" id="ipt_cavalo_participante">
             <button id="jogar" onclick="cad_nome()">Cadastrar nome</button>
+            <div id="div_cavalos_cadastrados"></div>
         </section>
         <div id="tabelaResultados"></div>
         <div id="resposta"></div>
@@ -48,7 +49,14 @@
 
     function irparacadastrocavalo() {
         if (ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6 || ipt_voltas.value < 5 || ipt_voltas.value > 10) {
-            alert(`O número de cavalos deve estar entre 2 e 6 e o número de voltas entre 5 e 20`);
+            if ((ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6) && (ipt_voltas.value < 5 || ipt_voltas.value > 10)) {
+                alert(`O número de cavalos deve estar entre 2 e 6. E o número de voltas entre 5 e 10`);
+            } else if(ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6) {
+                alert(`O número de cavalos deve estar entre 2 e 6.`);
+            } else {
+                alert(`O número de voltas deve estar entre 5 e 10`);
+            }
+            
         } else {
             if ((ipt_qtdcavalos.value > 0 && ipt_qtdcavalos.value != null) || (ipt_voltas.value > 0 && ipt_voltas.value != null)) {
                 voltas = ipt_voltas.value
@@ -81,6 +89,10 @@
                     ipt_cavalo_participante.style.display = 'none';
                     jogar.innerHTML = `Iniciar Corrida`;
                 }
+                div_cavalos_cadastrados.innerHTML = ``
+                for (let i = 0; i < nome_cavalo.length; i++) {
+                    div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+                }
             }
             else {
                 alert('Insira o nome de um cavalo')
@@ -91,6 +103,78 @@
 
             boxCadastroNomes.style.display = "none";
 
+        }
+    }
+    function close0() {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(0, 1);
+        div_cavalos_cadastrados.innerHTML = ``
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+        }
+    }
+    function close1() {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(1, 1);
+        div_cavalos_cadastrados.innerHTML = ``
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+        }
+    }
+    function close2() {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(2, 1);
+        div_cavalos_cadastrados.innerHTML = ``
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+        }
+    }
+    function close3() {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(3, 1);
+        div_cavalos_cadastrados.innerHTML = ``
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+        }
+    }
+    function close4() {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(4, 1);
+        div_cavalos_cadastrados.innerHTML = ``
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+        }
+    }
+    function close5() {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(5, 1);
+        div_cavalos_cadastrados.innerHTML = ``
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
         }
     }
 
