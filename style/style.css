@@ -303,26 +303,25 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.5);
+    /* background-color: rgba(0, 0, 0, 0.5); */
 }
 
 #pista {
     width: 80%;
     height: 60%;
-    background-image: url('../assets/pista.jpg');
+    background-image: url('../assets/pista.png');
     background-size: cover;
     background-position: center;
     position: relative;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 5px dashed #5a3a1f;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    /* overflow: hidden; */
+    border-radius: 10px; 
+    margin: 0 auto;
 }
 
 .cavalo-correndo {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -330,6 +329,7 @@ body {
     left: 10%;
     transform: translateX(-50%);
     z-index: 100;
+    transition: left 0.1s linear; 
 }
 
 .nome-cavalo {
@@ -345,31 +345,19 @@ body {
 @keyframes correr {
     0% {
         left: 10%;
-        bottom: 20px;
-        transform: translateX(-50%) rotate(0deg);
-    }
-    25% {
-        left: 50%;
-        bottom: 20px;
-        transform: translateX(-50%) rotate(0deg);
+        transform: translateX(-50%);
     }
     50% {
         left: 90%;
-        bottom: 20px;
-        transform: translateX(-50%) rotate(0deg);
-    }
-    75% {
-        left: 50%;
-        bottom: 80%;
-        transform: translateX(-50%) rotate(0deg);
+        transform: translateX(-50%);
     }
     100% {
         left: 10%;
-        bottom: 20px;
-        transform: translateX(-50%) rotate(0deg);
+        transform: translateX(-50%);
+
     }
 }
 
 .correndo {
-    animation: correr var(--tempo-corrida, 8s) linear forwards;
+    animation: correr var(--tempo-corrida, 8s) linear infinite;
 }

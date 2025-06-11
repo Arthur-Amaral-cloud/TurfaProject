@@ -40,6 +40,7 @@
             <button id="jogar" onclick="cad_nome()">
                 <p>Cadastrar Cavalo</p>
             </button>
+            <audio src="./assets/corrida.mp3" id="somCorrida"></audio>
         </section>
         <div id="div_cavalos_cadastrados">
             <h2>Participantes:</h2>
@@ -83,44 +84,55 @@
 
     async function animarCorrida() {
         console.log("Iniciando animação da corrida...");
-        
+
         corridaContainer.style.display = "flex";
         pista.innerHTML = '';
-        
+
+        const temposCavalos = [];
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            let tempoTotal = 0;
+            for (let v = 1; v <= voltas; v++) {
+                const tempo = Number((Math.random() * 2 + 7).toFixed(1));
+                tempoTotal += Number(tempo);
+            }
+            tempoTotal = Number(tempoTotal.toFixed(1));
+            temposCavalos.push(tempoTotal);
+        }
+
         const promessas = nome_cavalo.map((nome, index) => {
             return new Promise(resolve => {
                 const cavaloDiv = document.createElement('div');
                 cavaloDiv.className = 'cavalo-correndo';
-                cavaloDiv.style.backgroundImage = "url('./assets/cavalo1.jpeg')";
+                cavaloDiv.style.backgroundImage = "url('./assets/cavalo1.png')";
                 cavaloDiv.style.bottom = `${20 + (index * 20)}px`;
-                
+
                 const nomeDiv = document.createElement('div');
                 nomeDiv.className = 'nome-cavalo';
                 nomeDiv.textContent = nome;
                 cavaloDiv.appendChild(nomeDiv);
-                
+
                 pista.appendChild(cavaloDiv);
-                
-                const tempoVolta = (Math.random() * 2 + 7) * voltas;
+
+                const tempoVolta = temposCavalos[index];
                 cavaloDiv.style.setProperty('--tempo-corrida', `${tempoVolta}s`);
-                
+
                 setTimeout(() => {
                     cavaloDiv.classList.add('correndo');
                     setTimeout(resolve, tempoVolta * 1000);
                 }, 100);
             });
         });
-        
+
         await Promise.all(promessas);
         console.log("Animação concluída!");
     }
 
     function calcularResultados() {
         console.log("Calculando resultados...");
-        
+
         tempo_acumulado = [];
         var tabelaHTML = '<table><tr><th>Cavalo</th>';
-        
+
         for (var v = 1; v <= voltas; v++) {
             tabelaHTML += `<th>Volta ${v}</th>`;
             if (v == voltas) {
@@ -128,29 +140,32 @@
             }
         }
         tabelaHTML += '</tr>';
-        
+
+        const temposPorVolta = [];
         for (var i = 0; i < nome_cavalo.length; i++) {
-            tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
-            
+            temposPorVolta[i] = [];
             var tempoTotal = 0;
+            tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
+
             for (var v = 1; v <= voltas; v++) {
                 var tempo = Number((Math.random() * 2 + 7).toFixed(1));
+                temposPorVolta[i].push(tempo);
                 tempoTotal += Number(tempo);
                 tabelaHTML += `<td>${tempo}</td>`;
             }
-            
+
             tempoTotal = Number(tempoTotal.toFixed(1));
             tempo_acumulado.push(tempoTotal);
             tabelaHTML += `<td>${tempoTotal}</td></tr>`;
         }
-        
+
         tabelaHTML += '</table>';
         tabelaResultados.innerHTML = tabelaHTML;
-        
+
         primeiro_lugar = 0;
         segundo_lugar = 1;
         terceiro_lugar = 2;
-        
+
         for (let i = 0; i < tempo_acumulado.length; i++) {
             if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
                 terceiro_lugar = segundo_lugar;
@@ -165,7 +180,7 @@
                 terceiro_lugar = i;
             }
         }
-        
+
         resposta.innerHTML = '';
         if (tempo_acumulado.length >= 3) {
             resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} (${tempo_acumulado[primeiro_lugar]}s)<br>`;
@@ -175,16 +190,16 @@
             resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} (${tempo_acumulado[primeiro_lugar]}s)<br>`;
             resposta.innerHTML += `Segundo Lugar: ${nome_cavalo[segundo_lugar]} (${tempo_acumulado[segundo_lugar]}s)`;
         }
-        
+
         resposta.innerHTML += `<br><br>Critério de Desempate: Ordem de Inscrição`;
     }
 
     async function iniciarCorrida() {
         boxCadastroNomes.style.display = "none";
         div_cavalos_cadastrados.style.display = "none";
-        
+
         await animarCorrida();
-        
+
         calcularResultados();
         tabelaResultados.style.display = "flex";
         resposta.style.display = "flex";
@@ -251,7 +266,7 @@
                     jogar.style.backgroundColor = "rgb(189, 123, 0)";
                     jogar.innerHTML = `<p style="color: white">Iniciar Corrida</p>`;
                 }
-                
+
                 div_cavalos_cadastrados.style.display = "flex";
                 div_cavalos_cadastrados.innerHTML = `<b>Participantes:</b>`;
                 for (let i = 0; i < nome_cavalo.length; i++) {
@@ -263,6 +278,7 @@
             }
         } else {
             iniciarCorrida();
+            document.getElementById('somCorrida').play();
             boxCadastroNomes.style.display = "none";
         }
     }
@@ -310,9 +326,9 @@
         tabelaResultados.innerHTML = tabelaHTML;
     }
 
-    console.log("Tentando carregar imagem:", './assets/cavalo1.jpeg');
+    console.log("Tentando carregar imagem:", './assets/cavalo1.png');
     const img = new Image();
-    img.src = './assets/cavalo1.jpeg';
+    img.src = './assets/cavalo1.png';
     img.onload = () => console.log("Imagem carregada com sucesso");
     img.onerror = () => console.log("Erro ao carregar imagem");
 </script>
