@@ -103,7 +103,7 @@
             return new Promise(resolve => {
                 const cavaloDiv = document.createElement('div');
                 cavaloDiv.className = 'cavalo-correndo';
-                cavaloDiv.style.backgroundImage = "url('./assets/cavalo1.png')";
+                cavaloDiv.style.backgroundImage = "url('./assets/cavalo.gif')";
                 cavaloDiv.style.bottom = `${20 + (index * 20)}px`;
 
                 const nomeDiv = document.createElement('div');
@@ -326,9 +326,9 @@
         tabelaResultados.innerHTML = tabelaHTML;
     }
 
-    console.log("Tentando carregar imagem:", './assets/cavalo1.png');
+    console.log("Tentando carregar imagem:", './assets/cavalo.gif');
     const img = new Image();
-    img.src = './assets/cavalo1.png';
+    img.src = './assets/cavalo.gif';
     img.onload = () => console.log("Imagem carregada com sucesso");
     img.onerror = () => console.log("Erro ao carregar imagem");
 </script>
