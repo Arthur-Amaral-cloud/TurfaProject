@@ -1,0 +1,375 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    font-family: Poppins;
+}
+
+body {
+    background-image: url('../assets/background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#msgAlerta {
+    background-color: rgb(138, 0, 0);
+    width: 25%;
+    height: 15vh;
+    border-radius: 10px;
+    animation: descer 0.7s ease forwards;
+    position: fixed;
+    left: 3%;
+    top: 6%;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes descer {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#msgAlerta p {
+    padding: 30px;
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+}
+
+
+.main-screen {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#boxWelcome {
+    width: 30%;
+    height: 30%;
+    background-color: rgba(255, 255, 255, 0.811);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 35%;
+    top: 25%;
+    border-radius: 15px;
+    box-shadow: 1px 1px 20px 1px rgb(38, 38, 38);
+    gap: 13%;
+}
+
+
+.btnIniciar {
+    background-color: rgb(59, 27, 0);
+    border: none;
+    width: 25vh;
+    height: 6vh;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.title-welcome p {
+    text-transform: uppercase;
+    font-weight: 650;
+    font-size: 20px;
+    color: rgb(34, 18, 0);
+}
+
+.btnIniciar p {
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 650;
+}
+
+.btnIniciar:hover {
+    background-color: rgb(87, 25, 0);
+    transform: scale(1.02);
+}
+
+#boxCadastro {
+    display: none;
+    flex-direction: column;
+    width: 40%;
+    background-color: rgba(255, 255, 255, 0.811);
+    box-shadow: 1px 1px 20px 1px rgb(38, 38, 38);
+    height: 50%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    gap: 10%;
+}
+
+.containerBoxCadastro {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 7%;
+    margin-top: 2%;
+}
+
+#boxCadastro span {
+    font-size: 20px;
+    font-weight: 550;
+    color: rgb(83, 40, 0);
+}
+
+#boxCadastro input {
+    width: 70%;
+    height: 10%;
+    border-radius: 6px;
+    border: 2px solid rgba(144, 144, 144, 0.69);
+    text-align: center;
+    font-size: 20px;
+    font-weight: 650;
+    color: rgb(124, 53, 2);
+}
+
+#boxCadastro button {
+    background-color: rgb(59, 27, 0);
+    width: 20vh;
+    height: 6vh;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: 0.2s ease;
+}
+
+#boxCadastro button:hover {
+    transform: scale(1.02);
+    background-color: rgb(87, 25, 0);
+}
+
+#boxCadastro button p {
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+
+#boxCadastroNomes {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    background-color: rgba(255, 255, 255, 0.811);
+    box-shadow: 1px 1px 20px 1px rgb(38, 38, 38);
+    height: 30%;
+    border-radius: 15px;
+}
+
+#boxCadastroNomes span {
+    font-weight: 550;
+}
+
+#boxCadastroNomes input {
+    width: 70%;
+    height: 20%;
+    margin-top: 20px;
+    text-align: center;
+    color: rgb(62, 37, 0);
+    font-weight: 550;
+}
+
+#boxCadastroNomes button {
+    background-color: rgb(59, 27, 0);
+    width: 20vh;
+    height: 6vh;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: 0.2s ease;
+    margin-top: 3%;
+}
+
+#boxCadastroNomes button p {
+    color: #fff;
+    font-weight: 600;
+}
+
+#boxCadastroNomes button:hover {
+    transform: scale(1.02);
+    background-color: rgb(87, 25, 0);
+}
+
+#div_cavalos_cadastrados {
+    background-color: #fff;
+    position: fixed;
+    left: 75%;
+    top: 5%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: auto;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 15px;
+}
+
+#div_cavalos_cadastrados h2 {
+    text-align: center;
+    font-size: 20px;
+}
+
+#div_cavalos_cadastrados button {
+    background-color: #ff0000;
+    width: 70px;
+    height: 30px;
+    transition: 0.2s ease;
+    color: #fff;
+    font-weight: 500;
+    margin-left: 30px;
+    border-radius: 5px;
+    border: none;
+    font-weight: 600;
+}
+
+#div_cavalos_cadastrados button:hover {
+    background-color: #ff0000;
+    transform: scale(1.01);
+}
+
+#tabelaResultados table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#tabelaResultados th, 
+#tabelaResultados td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#tabelaResultados th {
+    background-color: rgb(59, 27, 0);
+    color: white;
+    font-weight: bold;
+}
+
+#tabelaResultados tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+
+#tabelaResultados tr:hover {
+    background-color: #f1f1f1;
+}
+
+#resposta {
+    margin-top: 30px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 25%;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 15px;
+}
+
+#corrida-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#pista {
+    width: 80%;
+    height: 60%;
+    background-image: url('../assets/pista.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px dashed #5a3a1f;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.cavalo-correndo {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    bottom: 20px;
+    left: 10%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+.nome-cavalo {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px black;
+}
+
+@keyframes correr {
+    0% {
+        left: 10%;
+        bottom: 20px;
+        transform: translateX(-50%) rotate(0deg);
+    }
+    25% {
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%) rotate(0deg);
+    }
+    50% {
+        left: 90%;
+        bottom: 20px;
+        transform: translateX(-50%) rotate(0deg);
+    }
+    75% {
+        left: 50%;
+        bottom: 80%;
+        transform: translateX(-50%) rotate(0deg);
+    }
+    100% {
+        left: 10%;
+        bottom: 20px;
+        transform: translateX(-50%) rotate(0deg);
+    }
+}
+
+.correndo {
+    animation: correr var(--tempo-corrida, 8s) linear forwards;
+}

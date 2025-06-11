@@ -4,37 +4,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style/style.css">
     <title>FlashHorses</title>
 </head>
 
 <body>
+    <div id="msgAlerta">
+    </div>
     <main class="main-screen">
         <section id="boxWelcome">
-            <div class="title-welcome">Seja Bem-vindo a Turfa</div>
+            <div class="title-welcome">
+                <p>Seja Bem-vindo a Turfa!</p>
+            </div>
             <div class="box-button-welcome">
-                <button onclick="irparacadastro()">Vamos correr!</button>
+                <button class="btnIniciar" onclick="irparacadastro()">
+                    <p>Vamos correr!</p>
+                </button>
+                <audio id="somCavalo" src="./assets/cavaloSound.mp3"></audio>
             </div>
         </section>
         <section id="boxCadastro">
-            <span>Coloque a quantidade cavalos na corrida</span><input type="number" maxlength="1" id="ipt_qtdcavalos">
-            <span>Coloque a quantidade de voltas que a corrida terá</span> <input type="number" maxlength="2"
-                id="ipt_voltas">
-            <button id="cadCavalos" onclick="irparacadastrocavalo()">Cadastrar Cavalos</button>
+            <div class="containerBoxCadastro">
+                <span>Digite a quantidade de cavalos que irão correr</span><input type="number" maxlength="1"
+                    id="ipt_qtdcavalos">
+                <span>Digite a quantidade de voltas que a corrida terá</span> <input type="number" maxlength="2"
+                    id="ipt_voltas">
+                <button id="cadCavalos" onclick="irparacadastrocavalo()">
+                    <p>Cadastrar</p>
+                </button>
+            </div>
         </section>
         <section id="boxCadastroNomes">
-            <span>Coloque o nome do cavalo participante</span> <input type="text" id="ipt_cavalo_participante">
-            <button id="jogar" onclick="cad_nome()">Cadastrar nome</button>
-            <div id="div_cavalos_cadastrados"></div>
+            <span id="texto">Digite os nomes dos cavalos que irão participar.</span> <input type="text"
+                id="ipt_cavalo_participante">
+            <button id="jogar" onclick="cad_nome()">
+                <p>Cadastrar Cavalo</p>
+            </button>
         </section>
-        <div id="tabelaResultados"></div>
+        <div id="div_cavalos_cadastrados">
+            <h2>Participantes:</h2>
+        </div>
+        <div id="tabelaResultados" style="display: none;">
+            <div class="tabela-container">
+            </div>
+        </div>
         <div id="resposta"></div>
+        <section id="corrida-container" style="display: none;">
+            <div id="pista">
+            </div>
+        </section>
     </main>
 </body>
 
 </html>
 <script>
-    var nome_cavalo = []
+    var nome_cavalo = [];
     var tempo_acumulado = [];
     var voltas = 0;
     var qtd_cavalos = 0;
@@ -42,35 +66,172 @@
     var segundo_lugar = 0;
     var terceiro_lugar = 0;
 
+    const boxWelcome = document.getElementById('boxWelcome');
+    const boxCadastro = document.getElementById('boxCadastro');
+    const boxCadastroNomes = document.getElementById('boxCadastroNomes');
+    const ipt_qtdcavalos = document.getElementById('ipt_qtdcavalos');
+    const ipt_voltas = document.getElementById('ipt_voltas');
+    const ipt_cavalo_participante = document.getElementById('ipt_cavalo_participante');
+    const texto = document.getElementById('texto');
+    const jogar = document.getElementById('jogar');
+    const div_cavalos_cadastrados = document.getElementById('div_cavalos_cadastrados');
+    const tabelaResultados = document.getElementById('tabelaResultados');
+    const resposta = document.getElementById('resposta');
+    const corridaContainer = document.getElementById('corrida-container');
+    const pista = document.getElementById('pista');
+    const msgAlerta = document.getElementById('msgAlerta');
+
+    async function animarCorrida() {
+        console.log("Iniciando animação da corrida...");
+        
+        corridaContainer.style.display = "flex";
+        pista.innerHTML = '';
+        
+        const promessas = nome_cavalo.map((nome, index) => {
+            return new Promise(resolve => {
+                const cavaloDiv = document.createElement('div');
+                cavaloDiv.className = 'cavalo-correndo';
+                cavaloDiv.style.backgroundImage = "url('./assets/cavalo1.jpeg')";
+                cavaloDiv.style.bottom = `${20 + (index * 20)}px`;
+                
+                const nomeDiv = document.createElement('div');
+                nomeDiv.className = 'nome-cavalo';
+                nomeDiv.textContent = nome;
+                cavaloDiv.appendChild(nomeDiv);
+                
+                pista.appendChild(cavaloDiv);
+                
+                const tempoVolta = (Math.random() * 2 + 7) * voltas;
+                cavaloDiv.style.setProperty('--tempo-corrida', `${tempoVolta}s`);
+                
+                setTimeout(() => {
+                    cavaloDiv.classList.add('correndo');
+                    setTimeout(resolve, tempoVolta * 1000);
+                }, 100);
+            });
+        });
+        
+        await Promise.all(promessas);
+        console.log("Animação concluída!");
+    }
+
+    function calcularResultados() {
+        console.log("Calculando resultados...");
+        
+        tempo_acumulado = [];
+        var tabelaHTML = '<table><tr><th>Cavalo</th>';
+        
+        for (var v = 1; v <= voltas; v++) {
+            tabelaHTML += `<th>Volta ${v}</th>`;
+            if (v == voltas) {
+                tabelaHTML += `<th>Tempo Total</th>`;
+            }
+        }
+        tabelaHTML += '</tr>';
+        
+        for (var i = 0; i < nome_cavalo.length; i++) {
+            tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
+            
+            var tempoTotal = 0;
+            for (var v = 1; v <= voltas; v++) {
+                var tempo = Number((Math.random() * 2 + 7).toFixed(1));
+                tempoTotal += Number(tempo);
+                tabelaHTML += `<td>${tempo}</td>`;
+            }
+            
+            tempoTotal = Number(tempoTotal.toFixed(1));
+            tempo_acumulado.push(tempoTotal);
+            tabelaHTML += `<td>${tempoTotal}</td></tr>`;
+        }
+        
+        tabelaHTML += '</table>';
+        tabelaResultados.innerHTML = tabelaHTML;
+        
+        primeiro_lugar = 0;
+        segundo_lugar = 1;
+        terceiro_lugar = 2;
+        
+        for (let i = 0; i < tempo_acumulado.length; i++) {
+            if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
+                terceiro_lugar = segundo_lugar;
+                segundo_lugar = primeiro_lugar;
+                primeiro_lugar = i;
+            }
+            else if (tempo_acumulado[i] < tempo_acumulado[segundo_lugar] || primeiro_lugar == segundo_lugar) {
+                terceiro_lugar = segundo_lugar;
+                segundo_lugar = i;
+            }
+            else if (tempo_acumulado[i] < tempo_acumulado[terceiro_lugar] || primeiro_lugar == terceiro_lugar || terceiro_lugar == segundo_lugar) {
+                terceiro_lugar = i;
+            }
+        }
+        
+        resposta.innerHTML = '';
+        if (tempo_acumulado.length >= 3) {
+            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} (${tempo_acumulado[primeiro_lugar]}s)<br>`;
+            resposta.innerHTML += `Segundo Lugar: ${nome_cavalo[segundo_lugar]} (${tempo_acumulado[segundo_lugar]}s)<br>`;
+            resposta.innerHTML += `Terceiro Lugar: ${nome_cavalo[terceiro_lugar]} (${tempo_acumulado[terceiro_lugar]}s)`;
+        } else {
+            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} (${tempo_acumulado[primeiro_lugar]}s)<br>`;
+            resposta.innerHTML += `Segundo Lugar: ${nome_cavalo[segundo_lugar]} (${tempo_acumulado[segundo_lugar]}s)`;
+        }
+        
+        resposta.innerHTML += `<br><br>Critério de Desempate: Ordem de Inscrição`;
+    }
+
+    async function iniciarCorrida() {
+        boxCadastroNomes.style.display = "none";
+        div_cavalos_cadastrados.style.display = "none";
+        
+        await animarCorrida();
+        
+        calcularResultados();
+        tabelaResultados.style.display = "flex";
+        resposta.style.display = "flex";
+    }
+
+    function mostrarResultados() {
+        tabelaResultados.style.display = "flex";
+        resposta.style.display = "flex";
+    }
+
+    function mostrarMensagem() {
+        msgAlerta.style.display = "flex";
+        setTimeout(() => {
+            msgAlerta.style.display = "none";
+        }, 2000);
+    }
+
     function irparacadastro() {
         boxWelcome.style.display = "none";
         boxCadastro.style.display = "flex";
+        document.getElementById('somCavalo').play();
     }
 
     function irparacadastrocavalo() {
         if (ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6 || ipt_voltas.value < 5 || ipt_voltas.value > 10) {
             if ((ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6) && (ipt_voltas.value < 5 || ipt_voltas.value > 10)) {
-                alert(`O número de cavalos deve estar entre 2 e 6. E o número de voltas entre 5 e 10`);
-            } else if(ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6) {
-                alert(`O número de cavalos deve estar entre 2 e 6.`);
+                mostrarMensagem();
+                msgAlerta.innerHTML = `<p>O número de cavalos deve estar entre 2 e 6. E o número de voltas entre 5 e 10</p>`;
+            } else if (ipt_qtdcavalos.value < 2 || ipt_qtdcavalos.value > 6) {
+                mostrarMensagem();
+                msgAlerta.innerHTML = `<p>O número de cavalos deve estar entre 2 e 6.</p>`;
             } else {
-                alert(`O número de voltas deve estar entre 5 e 10`);
+                mostrarMensagem();
+                msgAlerta.innerHTML = `<p>O número de voltas deve estar entre 5 e 10</p>`;
             }
-            
         } else {
             if ((ipt_qtdcavalos.value > 0 && ipt_qtdcavalos.value != null) || (ipt_voltas.value > 0 && ipt_voltas.value != null)) {
-                voltas = ipt_voltas.value
-                qtd_cavalos = ipt_qtdcavalos.value
-
+                voltas = ipt_voltas.value;
+                qtd_cavalos = ipt_qtdcavalos.value;
                 ipt_qtdcavalos.value = ``;
                 ipt_voltas.value = ``;
-
                 boxWelcome.style.display = "none";
                 boxCadastro.style.display = "none";
                 boxCadastroNomes.style.display = "flex";
-
             } else {
-                alert('Insira valores nos campos');
+                mostrarMensagem();
+                msgAlerta.innerHTML = `<p>Insira valores nos campos</p>`;
             }
         }
     }
@@ -81,162 +242,57 @@
         if (qtd_cavalos > 0) {
             if (nomeCavalo != "") {
                 nome_cavalo.push(nomeCavalo);
-
                 qtd_cavalos--;
                 ipt_cavalo_participante.value = ``;
 
                 if (qtd_cavalos == 0) {
                     ipt_cavalo_participante.style.display = 'none';
-                    jogar.innerHTML = `Iniciar Corrida`;
+                    texto.style.display = "none";
+                    jogar.style.backgroundColor = "rgb(189, 123, 0)";
+                    jogar.innerHTML = `<p style="color: white">Iniciar Corrida</p>`;
                 }
-                div_cavalos_cadastrados.innerHTML = ``
+                
+                div_cavalos_cadastrados.style.display = "flex";
+                div_cavalos_cadastrados.innerHTML = `<b>Participantes:</b>`;
                 for (let i = 0; i < nome_cavalo.length; i++) {
-                    div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
+                    div_cavalos_cadastrados.innerHTML += `<br><div id="${i}">${i + 1} - ${nome_cavalo[i]} <button class="deletar" onclick="close${i}()">DELETAR</button></div>`;
                 }
+            } else {
+                mostrarMensagem();
+                msgAlerta.innerHTML = '<p>Insira o nome de um cavalo</p>';
             }
-            else {
-                alert('Insira o nome de um cavalo')
-            }
-        }
-        else {
-            iniciarCorrida();
-
-            boxCadastroNomes.style.display = "none";
-
-        }
-    }
-    function close0() {
-        if (qtd_cavalos == 0) {
-            ipt_cavalo_participante.style.display = 'flex';
-            jogar.innerHTML = `Cadastrar nome`;
-        }
-        qtd_cavalos++;
-        nome_cavalo.splice(0, 1);
-        div_cavalos_cadastrados.innerHTML = ``
-        for (let i = 0; i < nome_cavalo.length; i++) {
-            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
-        }
-    }
-    function close1() {
-        if (qtd_cavalos == 0) {
-            ipt_cavalo_participante.style.display = 'flex';
-            jogar.innerHTML = `Cadastrar nome`;
-        }
-        qtd_cavalos++;
-        nome_cavalo.splice(1, 1);
-        div_cavalos_cadastrados.innerHTML = ``
-        for (let i = 0; i < nome_cavalo.length; i++) {
-            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
-        }
-    }
-    function close2() {
-        if (qtd_cavalos == 0) {
-            ipt_cavalo_participante.style.display = 'flex';
-            jogar.innerHTML = `Cadastrar nome`;
-        }
-        qtd_cavalos++;
-        nome_cavalo.splice(2, 1);
-        div_cavalos_cadastrados.innerHTML = ``
-        for (let i = 0; i < nome_cavalo.length; i++) {
-            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
-        }
-    }
-    function close3() {
-        if (qtd_cavalos == 0) {
-            ipt_cavalo_participante.style.display = 'flex';
-            jogar.innerHTML = `Cadastrar nome`;
-        }
-        qtd_cavalos++;
-        nome_cavalo.splice(3, 1);
-        div_cavalos_cadastrados.innerHTML = ``
-        for (let i = 0; i < nome_cavalo.length; i++) {
-            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
-        }
-    }
-    function close4() {
-        if (qtd_cavalos == 0) {
-            ipt_cavalo_participante.style.display = 'flex';
-            jogar.innerHTML = `Cadastrar nome`;
-        }
-        qtd_cavalos++;
-        nome_cavalo.splice(4, 1);
-        div_cavalos_cadastrados.innerHTML = ``
-        for (let i = 0; i < nome_cavalo.length; i++) {
-            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
-        }
-    }
-    function close5() {
-        if (qtd_cavalos == 0) {
-            ipt_cavalo_participante.style.display = 'flex';
-            jogar.innerHTML = `Cadastrar nome`;
-        }
-        qtd_cavalos++;
-        nome_cavalo.splice(5, 1);
-        div_cavalos_cadastrados.innerHTML = ``
-        for (let i = 0; i < nome_cavalo.length; i++) {
-            div_cavalos_cadastrados.innerHTML += `<div id="${i}">${i + 1} - ${nome_cavalo[i]} <button onclick="close${i}()">X</button></div>`
-        }
-    }
-
-    function iniciarCorrida() {
-        var tabelaHTML = '<table><tr><th>Cavalo</th>';
-
-        for (var v = 1; v <= voltas; v++) {
-            tabelaHTML += `<th>Volta ${v}</th>`;
-            if (v == voltas) {
-                tabelaHTML += `<th>Tempo Acumulado</th>`;
-            }
-        }
-        tabelaHTML += '</tr>';
-
-        for (var i = 0; i < nome_cavalo.length; i++) {
-            tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
-
-            var tempo_A = 0;
-            for (var v = 1; v <= voltas; v++) {
-                var tempo = Number((Math.random() * 2 + 7).toFixed(1));
-                tempo_A += Number(tempo);
-                tempo_A = Number(tempo_A.toFixed(1));
-                tabelaHTML += `<td>${tempo}</td>`;
-            }
-            tabelaHTML += `<td>${tempo_A}</td>`;
-            tempo_acumulado.push(tempo_A);
-            tabelaHTML += '</tr>';
-        }
-
-        tabelaHTML += '</table>';
-        document.getElementById('tabelaResultados').innerHTML = tabelaHTML;
-
-        for (let i = 0; i < tempo_acumulado.length; i++) {
-            if (tempo_acumulado[i] < tempo_acumulado[primeiro_lugar]) {
-                terceiro_lugar = segundo_lugar;
-                segundo_lugar = primeiro_lugar;
-                primeiro_lugar = i;
-            }
-            else if (tempo_acumulado[i] < tempo_acumulado[segundo_lugar] || primeiro_lugar == segundo_lugar) {
-                terceiro_lugar = segundo_lugar;
-                segundo_lugar = i;
-
-            }
-            else if (tempo_acumulado[i] < tempo_acumulado[terceiro_lugar] || primeiro_lugar == terceiro_lugar || terceiro_lugar == segundo_lugar) {
-                terceiro_lugar = i;
-            }
-
-        }
-
-        if (tempo_acumulado.length >= 3) {
-            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${tempo_acumulado[primeiro_lugar]}m<br>Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${tempo_acumulado[segundo_lugar]}m<br>Terceiro Lugar: ${nome_cavalo[terceiro_lugar]} Tempo: ${tempo_acumulado[terceiro_lugar]}m`;
         } else {
-            resposta.innerHTML += `<br><br>Primeiro Lugar: ${nome_cavalo[primeiro_lugar]} Tempo: ${tempo_acumulado[primeiro_lugar]}m<br>Segundo Lugar: ${nome_cavalo[segundo_lugar]} Tempo: ${tempo_acumulado[segundo_lugar]}m`;
+            iniciarCorrida();
+            boxCadastroNomes.style.display = "none";
         }
+    }
 
-        resposta.innerHTML += `<br><br>Critério de Desempate: Ordem de Inscrição`;
+    function close0() { removerCavalo(0); }
+    function close1() { removerCavalo(1); }
+    function close2() { removerCavalo(2); }
+    function close3() { removerCavalo(3); }
+    function close4() { removerCavalo(4); }
+    function close5() { removerCavalo(5); }
 
+    function removerCavalo(index) {
+        if (qtd_cavalos == 0) {
+            ipt_cavalo_participante.style.display = 'flex';
+            jogar.innerHTML = `Cadastrar nome`;
+        }
+        qtd_cavalos++;
+        nome_cavalo.splice(index, 1);
+        atualizarListaCavalos();
+    }
+
+    function atualizarListaCavalos() {
+        div_cavalos_cadastrados.innerHTML = `<b>Participantes:</b>`;
+        for (let i = 0; i < nome_cavalo.length; i++) {
+            div_cavalos_cadastrados.innerHTML += `<br><div id="${i}">${i + 1} - ${nome_cavalo[i]} <button class="deletar" onclick="close${i}()">DELETAR</button></div>`;
+        }
     }
 
     function criarTabelaResultados() {
         var tabelaHTML = '<table><tr><th>Cavalo</th>';
-
         for (var v = 1; v <= voltas; v++) {
             tabelaHTML += `<th>Volta ${v}</th>`;
         }
@@ -244,7 +300,6 @@
 
         for (var i = 0; i < nome_cavalo.length; i++) {
             tabelaHTML += `<tr id="cavalo-${i}"><td>${nome_cavalo[i]}</td>`;
-
             for (var v = 1; v <= voltas; v++) {
                 tabelaHTML += '<td>-</td>';
             }
@@ -252,24 +307,12 @@
         }
 
         tabelaHTML += '</table>';
-        document.getElementById('tabelaResultados').innerHTML = tabelaHTML;
+        tabelaResultados.innerHTML = tabelaHTML;
     }
 
-    /*        for (var i = 1; i <= voltas; i++) {
-            resposta.innerHTML += `<br>Volta ${i} <br>`;
-            if (i == 1) {
-                for (var index = 0; index < nome_cavalo.length; index++) {
-                    var tempo = Number((Math.random() * 2 + 7).toFixed(1));
-                    tempo_acumulado.push(tempo);
-                    resposta.innerHTML += `Cavalo:${nome_cavalo[index]} - Tempo Acumulado:${tempo_acumulado[index]}m - Tempo da volta:${tempo}m - `
-                }
-            } else {
-                for (var index = 0; index < nome_cavalo.length; index++) {
-                    var tempo = Number((Math.random() * 2 + 7).toFixed(1));
-                    tempo_acumulado[index] += tempo;
-                    tempo_acumulado[index] = Number(tempo_acumulado[index].toFixed(1));
-                    resposta.innerHTML += `Cavalo:${nome_cavalo[index]} - Tempo Acumulado:${tempo_acumulado[index]}m - Tempo da volta:${tempo}m - `
-                }
-            }
-        }*/
+    console.log("Tentando carregar imagem:", './assets/cavalo1.jpeg');
+    const img = new Image();
+    img.src = './assets/cavalo1.jpeg';
+    img.onload = () => console.log("Imagem carregada com sucesso");
+    img.onerror = () => console.log("Erro ao carregar imagem");
 </script>
